@@ -1,6 +1,6 @@
 MIT License
 
-Original Ruby implementation (https://github.com/ddfreyne/d-mark):
+Original Ruby implementation (https://github.com/denisdefreyne/d-mark, formerly https://github.com/ddfreyne/d-mark):
 	Copyright (c) 2016 Denis Defreyne and contributors
 
 Python port (https://github.com/abathur/d-mark-python):
