@@ -1,7 +1,7 @@
 import string
 import itertools
 
-__version__ = "not yet, not yet"
+__version__ = "0.dev0"
 
 
 class ParserError(Exception):
