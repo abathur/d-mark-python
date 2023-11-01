@@ -1,0 +1,23 @@
+[project]
+name = "d-mark"
+description = "markup language for writing text"
+keywords = ["markup-language", "parser"]
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3"
+]
+authors =  [
+  {name = "Travis A. Everett", email = "travis.a.everett+dmark-python@gmail.com"},
+]
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = {attr = "dmark.__version__"}
+
+[project.urls]
+Repository = "https://github.com/abathur/d-mark-python"
+Documentation = "https://denisdefreyne.github.io/d-mark/"
+Ruby-implementation = "https://github.com/denisdefreyne/d-mark"
+Rust-implementation = "https://github.com/denisdefreyne/d-mark-rust"

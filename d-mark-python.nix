@@ -1,6 +1,8 @@
 { lib
-, python39
 , fetchFromGitHub
+, buildPythonPackage
+, setuptools
+, wheel
 , version ? "unstable"
 , src ? fetchFromGitHub {
     owner = "abathur";
@@ -10,7 +12,13 @@
   }
 }:
 
-python39.pkgs.buildPythonPackage {
+buildPythonPackage {
   inherit src version;
   name = "d-mark-python";
+  pyproject = true;
+
+  nativeBuildInputs = [
+    setuptools
+    wheel
+  ];
 }

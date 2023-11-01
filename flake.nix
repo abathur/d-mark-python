@@ -20,7 +20,7 @@
   outputs = { self, nixpkgs, flake-utils, flake-compat }:
     {
       overlays.default = final: prev: {
-        d-mark-python = final.callPackage ./d-mark-python.nix {
+        d-mark-python = final.python3Packages.callPackage ./d-mark-python.nix {
           # TODO: this won't work since it isn't in nixpkgs atm
           # version = prev.d-mark-python.version + "-" + (self.shortRev or "dirty");
           version = "unstable" + "-" + (self.shortRev or "dirty");
