@@ -67,6 +67,33 @@ class Element(object):
         )
 
 
+class FauxRubyString(str):
+    """
+    String class that returns None instead of raising
+    an IndexError for out of range string indexes.
+
+    This works around differing indexing behavior between
+    python and ruby that'll enable this port to remain
+    closer to the canonical ruby implementation for now.
+
+    (When this is better tested, ideally with some means
+    of cross-validating it against the canonical parser,
+    we can refactor into more idiomatic python.)
+    """
+
+    def __getitem__(self, key):
+        match key:
+            case int():
+                if key >= len(self):
+                    return None
+            case slice():
+                if key.stop >= len(self):
+                    key.stop = len(self) - 1
+            case _:
+                raise Exception("unexpected string index", key)
+        return str.__getitem__(self, key)
+
+
 class Parser(object):
     # ref:
     # IDENTIFIER_CHARS = Set.new(['a'..'z', 'A'..'Z', ['-', '_'], '0'..'9'].map(&:to_a).flatten)
@@ -76,8 +103,8 @@ class Parser(object):
     pos = col_nr = line_nr = length = raw = raw_chars = None
 
     def __init__(self, raw):
-        self.raw = raw
-        # TODO: ruby impl uses raw.chars.size here; not certain if len ~=
+        self.raw = FauxRubyString(raw)
+        # ref: ruby impl uses raw.chars.size here
         self.length = len(raw)
 
         self.pos = 0
@@ -115,9 +142,19 @@ class Parser(object):
             else:
                 return None
 
-    # TODO: written out
-    # def eof(self, pos):
-    #     return pos >= self.length
+    """
+    ruby impl carries a function equivalent to:
+    def eof(self, pos):
+        return pos >= self.length
+
+    It uses this in a couple outer loops to decide when
+    to bail.
+
+    I wrote this out of the python impl early on, but
+    I'm retaining notes on it here since I imagine it
+    is related to the py/ruby difference goading me to
+    carry FauxRubyString for now.
+    """
 
     def advance(self):
         if self.raw[self.pos] == "\n":
@@ -226,7 +263,11 @@ class Parser(object):
 
     def read_identifier_head(self):
         char = self.raw[self.pos]
-        if char in string.ascii_letters:
+        # TODO:
+        # "char and" below necessary to paper over ruby/py
+        # difference that will be moot if/when we drop
+        # FauxRubyString
+        if char and char in string.ascii_letters:
             self.advance()
             return char
         else:
@@ -239,7 +280,11 @@ class Parser(object):
 
         while True:
             char = self.raw[self.pos]
-            if char not in self.IDENTIFIER_CHARS:
+            # TODO:
+            # "not char or" below necessary to paper over ruby/py
+            # difference that will be moot if/when we drop
+            # FauxRubyString
+            if not char or char not in self.IDENTIFIER_CHARS:
                 break
 
             self.advance()
