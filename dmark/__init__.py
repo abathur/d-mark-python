@@ -54,8 +54,8 @@ class Element(object):
         if not self.attributes:
             return ""
         else:
-            return "{%s}" % ", ".join(
-                ["%r=>%r" % (key, value) for key, value in self.attributes.items()]
+            return "{%s}, " % ", ".join(
+                ["%r => %r" % (key, value) for key, value in self.attributes.items()]
             )
 
     def __eq__(self, other):
