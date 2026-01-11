@@ -340,8 +340,15 @@ class Parser(object):
                 elif char == "\n":
                     self.raise_parse_error("unexpected line break in attribute value")
                 else:
+                    # upstream uses #{char.inspect}
+                    # first draft here used {repr(char)}, but
+                    # that folds in single quotes that don't
+                    # pass our translation of upstream's
+                    # spec tests (which expect double quotes)
+                    # for now we'll use `"{char}"` to square
+                    # with the spec tests
                     self.raise_parse_error(
-                        f'(expected "%", "," or "]" after "%", but got {repr(char)})'
+                        f'expected "%", "," or "]" after "%", but got "{char}"'
                     )
             else:
                 if char in ("]", ","):
