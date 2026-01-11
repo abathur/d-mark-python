@@ -5,21 +5,29 @@ __version__ = "0.dev0"
 
 
 class ParserError(Exception):
+    message = fancy_message = extended_message = None
+
     def __init__(self, line_nr, col_nr, msg, content):
         line = content.splitlines(keepends=True)[line_nr]
 
-        # TODO not sure what ruby version's super() does
+        self.message = "parse error at line {line_nr}, col {col_nr}: {msg}".format(
+            line_nr=line_nr + 1, col_nr=col_nr + 1, msg=msg
+        )
 
         lines = [
-            "parse error at line {line_nr}, col {col_nr}: {msg}".format(
-                line_nr=line_nr + 1, col_nr=col_nr, msg=msg
-            ),
+            self.message,
             "",
             line.rstrip(),
             "\033[31m" + " " * max([col_nr - 1, 0]) + "↑" + "\033[0m",
         ]
 
-        Exception.__init__(self, "\n".join(lines))
+        self.fancy_message = self.extended_message = "\n".join(lines)
+
+        # Caution:
+        # ruby version uses super(); haven't investigated
+        # whether it does anything Exception.__init__
+        # doesn't or vice-versa
+        Exception.__init__(self, self.extended_message)
 
 
 class Element(object):
