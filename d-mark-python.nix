@@ -3,6 +3,7 @@
 , buildPythonPackage
 , setuptools
 , wheel
+, pytestCheckHook
 , version ? "unstable"
 , src ? fetchFromGitHub {
     owner = "abathur";
@@ -20,5 +21,9 @@ buildPythonPackage {
   nativeBuildInputs = [
     setuptools
     wheel
+  ];
+
+  nativeCheckInputs = [
+    pytestCheckHook
   ];
 }

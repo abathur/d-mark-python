@@ -46,9 +46,15 @@
           # };
           devShells = {
             default = pkgs.mkShell {
+              PYTHONDONTWRITEBYTECODE=1;
+              inputsFrom = [ pkgs.d-mark-python ];
+              packages = [];
+            };
+            idk = pkgs.mkShell {
               buildInputs = [ pkgs.d-mark-python ];
             };
           };
+
         }
     );
 }
