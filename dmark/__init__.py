@@ -357,9 +357,9 @@ class Parser(object):
                     self.advance()
                     is_escaping = True
                 elif char == None:
-                    raise_parse_error("unexpected file end in attribute value")
+                    self.raise_parse_error("unexpected file end in attribute value")
                 elif char == "\n":
-                    raise_parse_error("unexpected line break in attribute value")
+                    self.raise_parse_error("unexpected line break in attribute value")
                 else:
                     self.advance()
                     res += char
