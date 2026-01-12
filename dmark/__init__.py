@@ -478,7 +478,7 @@ class Translator(object):
         elif isinstance(node, Element):
             return cls.handle_element(node, context)
         else:
-            raise TypeError(f"Cannot handle {node.__class__}")
+            raise TypeError(f"Cannot handle {node.__class__.__name__}")
 
     @classmethod
     def handle_string(cls, string, _context):
