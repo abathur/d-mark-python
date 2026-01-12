@@ -1,5 +1,4 @@
 import string
-import itertools
 
 __version__ = "0.dev0"
 
@@ -434,15 +433,42 @@ class UnhandledNode(NotImplementedError):
         NotImplementedError.__init__(self, msg)
 
 
+# something borrowed: https://stackoverflow.com/a/10824484/307542
+def flatten(iterable):
+    iterator = iter(iterable)
+    sentinel = object()
+    stack = []
+    while True:
+        value = next(iterator, sentinel)
+        if value is sentinel:
+            if not stack:
+                break
+            iterator = stack.pop()
+        elif isinstance(value, str):
+            yield value
+        else:
+            try:
+                new_iterator = iter(value)
+            except TypeError:
+                yield value
+            else:
+                stack.append(iterator)
+                iterator = new_iterator
+
+
 class Translator(object):
     @classmethod
     def translate(cls, nodes, context=None):
+
         context = context or {}
-        return "".join(
-            itertools.chain.from_iterable(
-                map(lambda node: cls.handle(node, context), nodes)
-            )
-        )
+        """
+        ruby's .join appears ~coerce to string in a way
+        that makes it more or less a deep flattener
+        so we have a little more visible work to do
+
+        TODO: merge flattening + handling to optimize?
+        """
+        return "".join(flatten(map(lambda node: cls.handle(node, context), nodes)))
 
     @classmethod
     def handle(cls, node, context=None):
