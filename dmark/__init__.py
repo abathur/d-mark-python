@@ -420,7 +420,7 @@ class Parser(object):
         raise ParserError(self.line_nr, self.col_nr, msg, self.raw)
 
 
-class UnhandledNode(Exception):
+class UnhandledNode(NotImplementedError):
     def __init__(self, node):
         msg = None
 
@@ -431,7 +431,7 @@ class UnhandledNode(Exception):
         else:
             msg = f"Unhandled node #{repr(node)}"
 
-        Exception.__init__(msg)
+        NotImplementedError.__init__(self, msg)
 
 
 class Translator(object):
@@ -456,11 +456,11 @@ class Translator(object):
 
     @classmethod
     def handle_string(cls, string, _context):
-        raise NotImplementedError()
+        raise UnhandledNode(string)
 
     @classmethod
     def handle_element(cls, element, _context):
-        raise NotImplementedError()
+        raise UnhandledNode(element)
 
     @classmethod
     def handle_children(cls, node, context):
